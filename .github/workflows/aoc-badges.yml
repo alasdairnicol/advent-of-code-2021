@@ -17,7 +17,6 @@ jobs:
         with:
           userid: ${{ secrets.AOC_USER_ID }}
           session: ${{ secrets.AOC_SESSION }}
-          year: 2021
       - name: 📤 Push
         run: |
           git config --global user.email "<>"

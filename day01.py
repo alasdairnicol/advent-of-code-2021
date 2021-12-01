@@ -6,6 +6,7 @@ def main():
     depths = list(read_input())
     part_a = num_increasing_values(depths)
     part_b = num_increasing_values(depths, window_length=3)
+
     print(f"{part_a=}")
     print(f"{part_b=}")
 

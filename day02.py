@@ -10,11 +10,11 @@ def main():
     print(f"{part_b=}")
 
 
-def do_part_a(lines):
+def do_part_a(lines: list[str]) -> int:
     horizontal, depth = 0, 0
     for line in lines:
-        instruction, num = line.split()
-        num = int(num)
+        instruction, num_str = line.split()
+        num = int(num_str)
         if instruction == "forward":
             horizontal += num
         elif instruction == "down":
@@ -25,11 +25,11 @@ def do_part_a(lines):
     return horizontal * depth
 
 
-def do_part_b(lines):
+def do_part_b(lines: list[str]) -> int:
     horizontal, depth, aim = 0, 0, 0
     for line in lines:
-        instruction, num = line.split()
-        num = int(num)
+        instruction, num_str = line.split()
+        num = int(num_str)
         if instruction == "forward":
             horizontal += num
             depth += num * aim
@@ -41,7 +41,7 @@ def do_part_b(lines):
     return horizontal * depth
 
 
-def read_input():
+def read_input() -> list[str]:
     with open("day02.txt") as f:
         return f.readlines()
 

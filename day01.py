@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import itertools
+from typing import Generator
 
 
 def main():
@@ -10,7 +11,7 @@ def main():
     print(f"{part_b=}")
 
 
-def num_increasing_values(depths, window_length=1):
+def num_increasing_values(depths: list[int], window_length: int = 1) -> int:
     """
     We don't need to sum the sliding window. For a sliding window of
     length i, just count the number of positions x for which
@@ -30,7 +31,7 @@ def num_increasing_values(depths, window_length=1):
     return sum(1 if b > a else 0 for a, b in zip(depths, depths[window_length:]))
 
 
-def read_input():
+def read_input() -> Generator[int, None, None]:
     with open("day01.txt") as f:
         return (int(x) for x in f.readlines())
 

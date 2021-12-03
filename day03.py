@@ -22,7 +22,6 @@ def do_part_a(numbers: list[int], num_bits: int) -> int:
 def do_part_b(numbers: list[int], num_bits: int) -> int:
     o2 = get_gas_number(numbers, num_bits, o2=True)
     co2 = get_gas_number(numbers, num_bits, o2=False)
-    print(o2, co2)
     return o2 * co2
 
 

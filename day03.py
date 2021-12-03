@@ -31,7 +31,7 @@ def get_gas_number(numbers, num_bits, o2=True):
     while len(numbers) > 1:
         bit -= 1
         gamma_bit = get_gamma_bit(numbers, bit)
-        if bool(gamma_bit) ^ o2:
+        if bool(gamma_bit) ^ (not o2):
             numbers = [x for x in numbers if x & 2 ** bit]
         else:
             numbers = [x for x in numbers if x & 2 ** bit ^ 2 ** bit]

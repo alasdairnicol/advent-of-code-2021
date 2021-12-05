@@ -3,12 +3,12 @@ from collections import Counter
 from typing import Mapping, Tuple
 import re
 
-EndPoints = Tuple[Tuple[int, int], Tuple[int, int]]
+Point = Tuple[int, int]
 
 regex = re.compile(r"^(\d+),(\d+) -> (\d+),(\d+)")
 
 
-def parse_line(line: str) -> EndPoints:
+def parse_line(line: str) -> Tuple[Point, Point]:
     m = regex.match(line)
     if not m:
         raise ValueError(f"Failed to match line {line}")
@@ -24,20 +24,22 @@ def main():
     print(f"{part_b=}")
 
 
-def do_part_a(lines: list[EndPoints]) -> int:
+def do_part_a(lines: list[Tuple[Point, Point]]) -> int:
     grid = calc_grid(lines, include_diagonals=False)
     intersected_points = [key for key, count in grid.items() if count > 1]
     return len(intersected_points)
 
 
-def do_part_b(lines: list[EndPoints]) -> int:
+def do_part_b(lines: list[Tuple[Point, Point]]) -> int:
     grid = calc_grid(lines, include_diagonals=True)
     intersected_points = [key for key, count in grid.items() if count > 1]
     return len(intersected_points)
 
 
-def calc_grid(lines: list[EndPoints], include_diagonals: bool) -> Mapping:
-    grid: Counter = Counter()
+def calc_grid(
+    lines: list[Tuple[Point, Point]], include_diagonals: bool
+) -> Mapping[Point, int]:
+    grid: Counter[Point] = Counter()
 
     for (x1, y1), (x2, y2) in lines:
         if x1 < x2:

@@ -39,32 +39,23 @@ def calc_signal_output(line: str) -> int:
     digits[7] = three_segments[0]
     digits[8] = seven_segments[0]
 
-    # Three is one segment different from two and five
-    a, b, c = five_segments
-    if len(a - b) == len(a - c) == 1:
-        digits[3] = a
-        two_and_five = [b, c]
-    elif len(b - a) == len(b - c) == 1:
-        digits[3] = b
-        two_and_five = [a, c]
-    else:
-        digits[3] = c
-        two_and_five = [a, b]
+    # Nine contains all the segments of four
+    digits[9] = next(x for x in six_segments if digits[4] < x)
 
-    # Nine has one segment that three does not have
-    digits[9] = next(x for x in six_segments if len(x - digits[3]) == 1)
+    # Zero contains same segments as one and is not nine
+    digits[0] = next(x for x in six_segments if digits[1] < x and x != digits[9])
 
-    # Zero contains same segments as seven
-    digits[0] = next(x for x in six_segments if digits[7] < x and x != digits[9])
-
-    # Zero contains same segments as seven
+    # Six is the last number with six segments
     digits[6] = next(x for x in six_segments if x not in (digits[0], digits[9]))
 
-    trial = two_and_five[0]
-    if (digits[9] - trial) < digits[7]:
-        digits[5], digits[2] = two_and_five
-    else:
-        digits[2], digits[5] = two_and_five
+    # Three contains all the segements of one
+    digits[3] = next(x for x in five_segments if digits[1] < x)
+
+    # Five is contained by six
+    digits[5] = next(x for x in five_segments if x < digits[6])
+
+    # Two is the last digit  with five segments
+    digits[2] = next(x for x in five_segments if x not in (digits[3], digits[5]))
 
     segments_to_digits = {v: k for k, v in digits.items()}
 

@@ -1,7 +1,4 @@
 #!/usr/bin/env python
-from collections import Counter
-
-
 def main():
     lines = read_input()
     part_a = do_part_a(lines)

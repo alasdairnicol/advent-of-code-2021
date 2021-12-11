@@ -52,19 +52,16 @@ class Grid:
 def do_turn(grid: Grid) -> Tuple[Grid, int]:
     # Add one to everything
     new_grid = {k: v + 1 for k, v in grid.grid.items()}
-    flashed = set()
 
-    while flashing := {k for k, v in new_grid.items() if v > 9 and k not in flashed}:
+    while flashing := {k for k, v in new_grid.items() if v > 9}:
         for x, y in flashing:
-            for x, y in grid.neighbours(x, y):
-                new_grid[x, y] += 1
-        flashed |= flashing
+            for n_x, n_y in grid.neighbours(x, y):
+                # Only increment neighbours that haven't already flashed
+                if new_grid[n_x, n_y] != 0:
+                    new_grid[n_x, n_y] += 1
+            new_grid[x,y] = 0
 
-    # Set flashed to zero
-    for k in flashed:
-        new_grid[k] = 0
-
-    return Grid(new_grid), len(flashed)
+    return Grid(new_grid), len([v for v in new_grid.values() if v == 0])
 
 
 def main():

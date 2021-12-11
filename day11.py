@@ -13,6 +13,9 @@ class Grid:
         self.width = max(i for i, j in grid) + 1
         self.height = max(j for i, j in grid) + 1
 
+    def __len__(self):
+        return self.width * self.height
+
     @classmethod
     def from_lines(cls, lines: list[str]):
         grid = {}
@@ -68,8 +71,11 @@ def main():
     lines = read_input()
     grid = Grid.from_lines(lines)
 
-    part_a = do_part_a(grid, debug=True)
+    part_a = do_part_a(grid)
     print(f"{part_a=}")
+
+    part_b = do_part_b(grid)
+    print(f"{part_b=}")
 
 
 def do_part_a(grid: Grid, debug: bool = False) -> int:
@@ -88,7 +94,15 @@ def do_part_a(grid: Grid, debug: bool = False) -> int:
 
 
 def do_part_b(grid: Grid) -> int:
-    pass
+    num_octopuses = len(grid)
+    flashes = 0
+    turns = 0
+
+    while flashes < num_octopuses:
+        grid, flashes = do_turn(grid)
+        turns += 1
+
+    return turns
 
 
 def read_input() -> list[str]:

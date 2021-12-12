@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-from collections import defaultdict, Counter
-from typing import Mapping, Tuple
+from collections import defaultdict
+from typing import Mapping
 
 GraphType = Mapping[str, set[str]]
 Route = list[str]
@@ -34,11 +34,6 @@ def can_visit(visited: Route, next_node: str, can_revisit_one_minor_node=False):
         if not can_revisit_one_minor_node:
             return False
 
-        counts = Counter(v for v in visited if v.islower())
-        if 2 in counts.values():
-            # we've already revisited one minor mode
-            return False
-
     return True
 
 
@@ -50,6 +45,9 @@ def calc_routes(
 
     if current == "end":
         return [visited]
+
+    if can_revisit_one_minor_node and current.islower() and visited.count(current) == 2:
+        can_revisit_one_minor_node = False
 
     for next_node in graph[current]:
         if can_visit(visited, next_node, can_revisit_one_minor_node):

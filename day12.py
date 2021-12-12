@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from collections import defaultdict
+from collections import defaultdict, Counter
 from typing import Mapping, Tuple
 
 GraphType = Mapping[str, set[str]]
@@ -13,8 +13,8 @@ def main():
     part_a = do_part_a(graph)
     print(f"{part_a=}")
 
-    # part_b = do_part_b(grid)
-    # print(f"{part_b=}")
+    part_b = do_part_b(graph)
+    print(f"{part_b=}")
 
 
 def make_graph(lines: list[str]) -> GraphType:
@@ -26,7 +26,25 @@ def make_graph(lines: list[str]) -> GraphType:
     return graph
 
 
-def calc_routes(graph: GraphType, visited: Route) -> list[Route]:
+def can_visit(visited: Route, next_node: str, can_revisit_one_minor_node=False):
+    if next_node == "start":
+        return False
+
+    if next_node.islower() and next_node in visited:
+        if not can_revisit_one_minor_node:
+            return False
+
+        counts = Counter(v for v in visited if v.islower())
+        if 2 in counts.values():
+            # we've already revisited one minor mode
+            return False
+
+    return True
+
+
+def calc_routes(
+    graph: GraphType, visited: Route, can_revisit_one_minor_node=False
+) -> list[Route]:
     routes = []
     current = visited[-1]
 
@@ -34,17 +52,21 @@ def calc_routes(graph: GraphType, visited: Route) -> list[Route]:
         return [visited]
 
     for next_node in graph[current]:
-        if next_node.islower() and next_node in visited:
-            # Can't revisit a lower case node
-            pass
-        else:
-            routes.extend(calc_routes(graph, visited + [next_node]))
+        if can_visit(visited, next_node, can_revisit_one_minor_node):
+            routes.extend(
+                calc_routes(graph, visited + [next_node], can_revisit_one_minor_node)
+            )
 
     return routes
 
 
 def do_part_a(graph: GraphType) -> int:
     routes = calc_routes(graph, visited=["start"])
+    return len(routes)
+
+
+def do_part_b(graph: GraphType) -> int:
+    routes = calc_routes(graph, visited=["start"], can_revisit_one_minor_node=True)
     return len(routes)
 
 

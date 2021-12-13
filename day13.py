@@ -54,8 +54,8 @@ def main():
     part_1 = do_part_1(dots, folds[0])
     print(f"{part_1=}")
 
-    part_2 = do_part_2()
-    print(f"{part_2=}")
+    part_2 = do_part_2(dots, folds)
+    print(f"part_2=\n{part_2}")
 
 
 def do_part_1(dots: Dots, first_fold: Fold) -> int:
@@ -63,8 +63,19 @@ def do_part_1(dots: Dots, first_fold: Fold) -> int:
     return len(dots)
 
 
-def do_part_2() -> int:
-    return 20
+def do_part_2(dots: Dots, folds: list[Fold]) -> str:
+    for fold in folds:
+        dots = fold_paper(dots, fold)
+
+    x_min = min(x for (x, y) in dots)
+    x_max = max(x for (x, y) in dots)
+    y_min = min(y for (x, y) in dots)
+    y_max = max(y for (x, y) in dots)
+
+    return "\n".join(
+        "".join("#" if (x, y) in dots else " " for x in range(x_min, x_max + 1))
+        for y in range(y_min, y_max + 1)
+    )
 
 
 def read_input() -> str:

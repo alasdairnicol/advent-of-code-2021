@@ -40,15 +40,6 @@ def do_part_1(polymer, rules) -> int:
     return most - least
 
 
-@cache
-def count(x, y, num):
-    if num == 0:
-        return Counter([x])
-    else:
-        z = rules[x + y]
-        return count(x, z, num - 1) + count(z, y, num - 1)
-
-
 def do_part_2(polymer, rules) -> int:
     num_steps = 40
 

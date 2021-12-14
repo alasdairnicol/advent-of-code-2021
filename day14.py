@@ -1,11 +1,6 @@
 #!/usr/bin/env python
 from collections import Counter
-from dataclasses import dataclass
-from typing import Literal, Tuple
-
-
-def parse_rules(lines):
-    return
+from functools import cache
 
 
 def main():
@@ -17,8 +12,8 @@ def main():
     part_1 = do_part_1(template, rules)
     print(f"{part_1=}")
 
-    # part_2 = do_part_2(template, rules)
-    # print(f"{part_2=}")
+    part_2 = do_part_2(template, rules)
+    print(f"{part_2=}")
 
 
 def do_turn(polymer: str, rules: dict) -> str:
@@ -33,15 +28,48 @@ def do_part_1(polymer, rules) -> int:
     for i in range(10):
         polymer = do_turn(polymer, rules)
 
-    counter: Counter = Counter(polymer)
-    counts = counter.most_common()
+        counter: Counter = Counter(polymer)
+        counts = counter.most_common()
+        most = counts[0][1]
+        least = counts[-1][1]
+
+    totals: Counter = Counter(polymer)
+    counts = totals.most_common()
     most = counts[0][1]
     least = counts[-1][1]
     return most - least
 
 
+@cache
+def count(x, y, num):
+    if num == 0:
+        return Counter([x])
+    else:
+        z = rules[x + y]
+        return count(x, z, num - 1) + count(z, y, num - 1)
+
+
 def do_part_2(polymer, rules) -> int:
-    return 0
+    num_steps = 40
+
+    totals: Counter = Counter(polymer[-1:])
+
+    # Define inline so we have access to rules
+    @cache
+    def count(x, y, num):
+        if num == 0:
+            return Counter([x])
+        else:
+            z = rules[x + y]
+            return count(x, z, num - 1) + count(z, y, num - 1)
+
+    for x, y in zip(polymer, polymer[1:]):
+        totals += count(x, y, num_steps)
+
+    counts = totals.most_common()
+    most = counts[0][1]
+    least = counts[-1][1]
+    return most - least
 
 
 def read_input() -> list[str]:

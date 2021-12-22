@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from dataclasses import dataclass
+import itertools
 import re
 
 
@@ -12,6 +13,13 @@ class Cuboid:
     y_max: int
     z_min: int
     z_max: int
+
+    def volume(self) -> int:
+        return (
+            (self.x_max + 1 - self.x_min)
+            * (self.y_max + 1 - self.y_min)
+            * (self.z_max + 1 - self.z_min)
+        )
 
 
 def parse_line(line: str) -> Cuboid:
@@ -33,8 +41,87 @@ def main():
     part_1 = do_part_1(cuboids)
     print(f"{part_1=}")
 
-    part_2 = do_part_2()
+    part_2 = do_part_2(cuboids)
     print(f"{part_2=}")
+
+
+def is_overlapping(c1: Cuboid, c2: Cuboid) -> bool:
+    return (
+        any(
+            [
+                (c2.x_min <= c1.x_min <= c2.x_max),
+                (c2.x_min <= c1.x_max <= c2.x_max),
+                (c1.x_min <= c2.x_min <= c1.x_max),
+                (c1.x_min <= c2.x_min <= c1.x_max),
+            ]
+        )
+        and any(
+            [
+                (c2.y_min <= c1.y_min <= c2.y_max),
+                (c2.y_min <= c1.y_max <= c2.y_max),
+                (c1.y_min <= c2.y_min <= c1.y_max),
+                (c1.y_min <= c2.y_min <= c1.y_max),
+            ]
+        )
+        and any(
+            [
+                (c2.z_min <= c1.z_min <= c2.z_max),
+                (c2.z_min <= c1.z_max <= c2.z_max),
+                (c1.z_min <= c2.z_min <= c1.z_max),
+                (c1.z_min <= c2.z_min <= c1.z_max),
+            ]
+        )
+    )
+
+
+def subtract(c1: Cuboid, c2: Cuboid) -> list[Cuboid]:
+    xs = sorted([c1.x_min, c1.x_max + 1, c2.x_min, c2.x_max + 1])
+    x_ranges = [(x1, x2 - 1) for x1, x2 in zip(xs, xs[1:]) if x1 != x2]
+
+    ys = sorted([c1.y_min, c1.y_max + 1, c2.y_min, c2.y_max + 1])
+    y_ranges = [(y1, y2 - 1) for y1, y2 in zip(ys, ys[1:]) if y1 != y2]
+
+    zs = sorted([c1.z_min, c1.z_max + 1, c2.z_min, c2.z_max + 1])
+    z_ranges = [(z1, z2 - 1) for z1, z2 in zip(zs, zs[1:]) if z1 != z2]
+
+    out = []
+
+    for (x1, x2), (y1, y2), (z1, z2) in itertools.product(x_ranges, y_ranges, z_ranges):
+
+        in_c1 = all(
+            [
+                c1.x_min <= x1,
+                c1.x_max >= x2,
+                c1.y_min <= y1,
+                c1.y_max >= y2,
+                c1.z_min <= z1,
+                c1.z_max >= z2,
+            ]
+        )
+        in_c2 = all(
+            [
+                c2.x_min <= x1,
+                c2.x_max >= x2,
+                c2.y_min <= y1,
+                c2.y_max >= y2,
+                c2.z_min <= z1,
+                c2.z_max >= z2,
+            ]
+        )
+
+        if in_c1 and not in_c2:
+            out.append(
+                Cuboid(
+                    True,
+                    x1,
+                    x2,
+                    y1,
+                    y2,
+                    z1,
+                    z2,
+                )
+            )
+    return out
 
 
 def do_part_1(cuboids: list[Cuboid]) -> int:
@@ -52,8 +139,26 @@ def do_part_1(cuboids: list[Cuboid]) -> int:
     return len(grid)
 
 
-def do_part_2() -> int:
-    return 10
+def do_part_2(cuboids: list[Cuboid]) -> int:
+
+    total = 0
+
+    for i, cuboid in enumerate(cuboids):
+        if not cuboid.on:
+            continue
+        grid = [cuboid]
+        for future_cuboid in cuboids[i + 1 :]:
+            if not is_overlapping(cuboid, future_cuboid):
+                continue
+            new_grid = []
+            for c in grid:
+                remainder = subtract(c, future_cuboid)
+                new_grid.extend(remainder)
+            grid = new_grid
+
+        total += sum(c.volume() for c in grid)
+
+    return total
 
 
 def read_input() -> list[str]:

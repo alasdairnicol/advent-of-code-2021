@@ -3,10 +3,10 @@ import urllib.request
 import os
 
 def main():
-    cookie = os.environ['cookie']
+    session = os.environ['session']
     year = os.environ['year']
 
-    headers={'Cookie': f'session={cookie}'}
+    headers={'Cookie': f'session={session}'}
 
     for day in range(1, 5):
         url = f'https://adventofcode.com/{year}/day/{day}/input'

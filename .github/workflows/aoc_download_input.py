@@ -8,7 +8,7 @@ def main():
 
     headers={'Cookie': f'session={session}'}
 
-    for day in range(1, 5):
+    for day in range(1, 26):
         url = f'https://adventofcode.com/{year}/day/{day}/input'
         request=urllib.request.Request(url=url,headers=headers)
         response=urllib.request.urlopen(request)

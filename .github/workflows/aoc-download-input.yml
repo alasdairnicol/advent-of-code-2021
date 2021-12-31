@@ -1,0 +1,24 @@
+name: 🎄 Advent of Code Download Input 🎄
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    name: ⬇️ Download Input Files ⬇️
+    runs-on: ubuntu-latest
+    if: startsWith(github.repository, 'alasdairnicol') # don't run in forks
+    steps:
+      - uses: actions/checkout@v2
+      - name: run download script
+        with:
+          session: ${{ secrets.AOC_SESSION }}
+          year: 2021
+        run: |
+          python .github/workflows/download_input_files
+      - uses: joblo2213/aoc-badges-action@v3.0.0
+      - name: 📤 Push
+        run: |
+          git config --global user.email "<>"
+          git config --global user.name "AOC README Bot 🤖"
+          git add *.txt
+          git diff-index --quiet HEAD || git commit --message "Downloaded Input Files"
+          git push

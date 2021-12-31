@@ -10,8 +10,8 @@ jobs:
       - uses: actions/checkout@v2
       - name: run download script
         run: |
-          python .github/workflows/download_input_files
-        with:
+          python .github/workflows/download_input_files.py
+        env:
           session: ${{ secrets.AOC_SESSION }}
           year: 2021
       - name: 📤 Push

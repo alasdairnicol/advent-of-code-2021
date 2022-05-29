@@ -14,8 +14,8 @@ def main():
 
 
 def do_part_a(numbers: list[int], num_bits: int) -> int:
-    gamma = sum(get_gamma_bit(numbers, bit) * 2 ** bit for bit in range(num_bits))
-    epsilon = gamma ^ 2 ** num_bits - 1
+    gamma = sum(get_gamma_bit(numbers, bit) * 2**bit for bit in range(num_bits))
+    epsilon = gamma ^ 2**num_bits - 1
     return gamma * epsilon
 
 
@@ -32,15 +32,15 @@ def get_gas_number(numbers, num_bits, o2=True):
         bit -= 1
         gamma_bit = get_gamma_bit(numbers, bit)
         if bool(gamma_bit) ^ (not o2):
-            numbers = [x for x in numbers if x & 2 ** bit]
+            numbers = [x for x in numbers if x & 2**bit]
         else:
-            numbers = [x for x in numbers if x & 2 ** bit ^ 2 ** bit]
+            numbers = [x for x in numbers if x & 2**bit ^ 2**bit]
 
     return numbers[0]
 
 
 def get_gamma_bit(numbers: list[int], bit: int) -> int:
-    num_ones = len([x for x in numbers if x & 2 ** bit])
+    num_ones = len([x for x in numbers if x & 2**bit])
     if num_ones >= len(numbers) - num_ones:
         return 1
     else:

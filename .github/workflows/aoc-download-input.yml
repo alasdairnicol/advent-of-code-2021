@@ -1,8 +1,6 @@
 name: 🎄 Advent of Code Download Input 🎄
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '8 6 * 12 *'
 jobs:
   build:
     name: ⬇️ Download Input Files ⬇️

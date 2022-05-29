@@ -59,7 +59,7 @@ def do_turn(grid: Grid) -> Tuple[Grid, int]:
                 # Only increment neighbours that haven't already flashed
                 if new_grid[n_x, n_y] != 0:
                     new_grid[n_x, n_y] += 1
-            new_grid[x,y] = 0
+            new_grid[x, y] = 0
 
     return Grid(new_grid), len([v for v in new_grid.values() if v == 0])
 
